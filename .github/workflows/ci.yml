@@ -97,7 +97,9 @@ jobs:
       run: |
         sudo rm -f /etc/apt/sources.list.d/dotnetdev.list /etc/apt/sources.list.d/microsoft-prod.list
         sudo apt update
-        sudo apt install postgresql postgresql-contrib
+        sudo apt install postgresql-12
+        sudo cat /etc/postgresql/12/main/pg_hba.conf
+        sudo pg_ctlcluster 12 main start
 
     - name: Install pgsu
       run: |

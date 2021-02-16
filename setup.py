@@ -34,6 +34,7 @@ setup(
     install_requires=[
         'psycopg2-binary>=2.8.3',
         'click',
+        'six',
         "enum34; python_version<'3.5'",
     ],
     extras_require={

@@ -11,9 +11,9 @@ repos:
 
 # modernizer: make sure our code-base is Python 3 ready
 - repo: https://github.com/python-modernize/python-modernize.git
-  rev: v0.8.0
+  rev: v0.9rc0
   hooks:
-  - id: python-modernize
+  - id: modernize
     exclude: ^docs/
     args:
       - --write

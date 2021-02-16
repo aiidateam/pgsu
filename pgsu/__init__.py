@@ -81,9 +81,9 @@ class PGSU:
         """
         self.interactive = interactive
         if not quiet:
-            chdl = logging.StreamHandler()
-            chdl.setLevel(logging.INFO)
-            LOGGER.addHandler(chdl)
+            handler = logging.StreamHandler()
+            handler.setLevel(logging.INFO)
+            LOGGER.addHandler(handler)
         self.connection_mode = PostgresConnectionMode.DISCONNECTED
 
         self.setup_fail_counter = 0

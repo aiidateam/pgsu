@@ -65,6 +65,8 @@ jobs:
 
     - name: Run test suite
       run: pytest --cov-report xml
+      env:
+        PGSU_TEST_PORT: 5433  # for some reason default on GH actions
 
     - name: Upload coverage report
       if: github.repository == 'aiidateam/pgsu'
@@ -104,6 +106,8 @@ jobs:
 
     - name: Run test suite
       run: pytest --cov-report xml
+      env:
+        PGSU_TEST_PORT: 5433  # for some reason default on GH actions
 
     - name: Upload coverage report
       if: github.repository == 'aiidateam/pgsu'

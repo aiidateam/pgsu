@@ -70,7 +70,7 @@ class PGSU:
                  dsn=None,
                  determine_setup=True,
                  try_sudo=DEFAULT_TRY_SUDO,
-                 sudo_user=DEFAULT_UNIX_USER):
+                 unix_user=DEFAULT_UNIX_USER):
         """Store postgres connection info.
 
         :param interactive: use True for verdi commands
@@ -80,8 +80,8 @@ class PGSU:
         :param determine_setup: Whether to determine setup upon instantiation.
             You may set this to False and use the 'determine_setup()' method instead.
         :param try_sudo: If connection via psycopg2 fails, whether to try and use `sudo` to  become
-            the `sudo_user` and run commands using passwordless `psql`.
-        :param sudo_user: UNIX user to try to "become", if connection via psycopg2 fails
+            the `unix_user` and run commands using passwordless `psql`.
+        :param unix_user: UNIX user to try to "become", if connection via psycopg2 fails
         """
         self.interactive = interactive
         if not quiet:
@@ -98,7 +98,7 @@ class PGSU:
             self.dsn.update(dsn)
 
         self.try_sudo = try_sudo
-        self.sudo_user = sudo_user
+        self.unix_user = unix_user
 
         if determine_setup:
             self.determine_setup()
@@ -157,10 +157,10 @@ class PGSU:
         # Check if 'sudo' is available and try to become 'postgres'.
         if self.try_sudo:
             LOGGER.debug('Trying to connect by becoming the "%s" unix user...',
-                         self.sudo_user)
+                         self.unix_user)
             if _sudo_exists():
                 dsn = self.dsn.copy()
-                dsn['user'] = self.sudo_user
+                dsn['user'] = self.unix_user
 
                 if _try_su_psql(interactive=self.interactive, dsn=dsn):
                     self.dsn = dsn
@@ -169,7 +169,7 @@ class PGSU:
             else:
                 LOGGER.info(
                     'Could not find `sudo` to become the the "%s" unix user.',
-                    self.sudo_user)
+                    self.unix_user)
 
         self.setup_fail_counter += 1
         return self._no_setup_detected()

@@ -250,16 +250,18 @@ def _execute_psyco(command, dsn):
     """
     import psycopg2  # pylint: disable=import-outside-toplevel
 
+    conn = None
     output = None
-    with psycopg2.connect(**dsn) as conn:
+    try:
+        conn = psycopg2.connect(**dsn)
         conn.autocommit = True
         with conn.cursor() as cursor:
             cursor.execute(command)
             if cursor.description is not None:
                 output = cursor.fetchall()
-
-    # see http://initd.org/psycopg/docs/usage.html#with-statement
-    conn.close()
+    finally:
+        if conn:
+            conn.close()
     return output
 
 

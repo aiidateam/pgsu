@@ -40,7 +40,7 @@ jobs:
 
     strategy:
       matrix:
-        python-version: [3.5, 3.9]
+        python-version: [3.6, 3.9]
 
     steps:
     - uses: actions/checkout@v2
@@ -76,14 +76,14 @@ jobs:
         file: ./coverage.xml
         fail_ci_if_error: true
 
-  ubuntu-apt-1604:
+  ubuntu-apt-1804:
     # ubuntu using postgresql installed via apt (+ pgtest)
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-18.04
     timeout-minutes: 5
 
     strategy:
       matrix:
-        python-version: [3.5]
+        python-version: [3.6]
 
     steps:
     - uses: actions/checkout@v2

@@ -291,10 +291,7 @@ def _try_su_psql(interactive, dsn):
     :return: True if successful, False otherwise
     """
     try:
-        _execute_su_psql(r'\q',
-                         interactive=interactive,
-                         dsn=dsn,
-                         stderr=subprocess.STDOUT)
+        _execute_su_psql(r'\q', interactive=interactive, dsn=dsn)
         return True
     except subprocess.CalledProcessError:
         LOGGER.debug('Failed to run "psql" in a subprocess as user %s',
@@ -303,17 +300,18 @@ def _try_su_psql(interactive, dsn):
     return False
 
 
-def _execute_su_psql(command, dsn, interactive=False, stderr=None):
+def _execute_su_psql(command, dsn, interactive=False):
     """
     Executes an SQL command via ``psql`` as another system user in a subprocess.
 
     Tries to "become" the user specified in ``dsn`` (i.e. interpreted as UNIX system user)
     and run psql in a subprocess.
 
+    Logs any output on 'stderr' to the pgsu logger at 'warning' level.
+
     :param command: A psql command line as a str
     :param dsn: connection details to forward to psql, signature as in psycopg2.connect
     :param interactive: If False, `sudo` won't ask for a password and fail if one is required.
-    :param stderr: Allows redirection of stderr for subprocess call
     """
     psql_option_str = ''
 
@@ -356,8 +354,22 @@ def _execute_su_psql(command, dsn, interactive=False, stderr=None):
     LOGGER.info(
         "Trying to become '%s' user. You may be asked for your 'sudo' password.",
         user)
-    result = subprocess.check_output(sudo_su_psql, stderr=stderr)
-    result = result.decode('utf-8').strip().split(os.linesep)
+
+    # This block implements 'result = check_output(sudo_su_psql, encoding="utf-8")',
+    # except that we capture stderr and log it.
+    proc = subprocess.run(
+        sudo_su_psql,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        encoding='utf-8',
+        check=False,
+    )
+    if proc.stderr:
+        LOGGER.warning(proc.stderr)
+    proc.check_returncode()
+    result = proc.stdout
+
+    result = result.strip().split(os.linesep)
     result = [i for i in result if i]
 
     return result

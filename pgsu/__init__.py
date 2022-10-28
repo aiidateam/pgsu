@@ -347,7 +347,7 @@ def _execute_su_psql(command, dsn, interactive=False):
 
     psql_cmd = [
         'cd ~ && psql {opt} -tc {cmd}'.format(cmd=escape_for_bash(command),
-                                      opt=psql_option_str)
+                                              opt=psql_option_str)
     ]
     sudo_su_psql = sudo_cmd + su_cmd + psql_cmd
 

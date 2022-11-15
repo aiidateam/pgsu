@@ -19,7 +19,7 @@ jobs:
 
     - name: Install python dependencies
       run: |
-        pip install -e .[pre_commit,testing]
+        pip install .[pre_commit,testing]
         pip freeze
 
     - name: Run pre-commit
@@ -210,7 +210,7 @@ jobs:
       #  macos-brew:
       #    # macos using postgres installed via homebrew (+pgtest)
       #
-      #    runs-on: macos-10.15
+      #    runs-on: macos-12
       #    timeout-minutes: 5
       #
       #    strategy:
@@ -245,7 +245,7 @@ jobs:
 
 
   multi-conda:
-    # windows with postgres installed via conda (+pgtest)
+    # windows and macos with postgres installed via conda (+pgtest)
 
     runs-on: ${{ matrix.os }}
     timeout-minutes: 5
@@ -253,7 +253,7 @@ jobs:
     strategy:
       matrix:
         python-version: [3.8]
-        os: ['macos-10.15', 'windows-2019']
+        os: ['macos-12', 'windows-2019']
 
     steps:
     - uses: actions/checkout@v2
@@ -265,7 +265,6 @@ jobs:
 
     - uses: conda-incubator/setup-miniconda@v2
       with:
-        # auto-update-conda: true
         python-version: ${{ matrix.python-version }}
 
     - name: Install system dependencies

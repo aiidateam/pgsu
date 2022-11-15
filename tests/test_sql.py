@@ -9,8 +9,8 @@ from contextlib import contextmanager
 from io import StringIO
 import psycopg2
 
-from pgsu import PGSU, DEFAULT_DSN
 import conftest
+from pgsu import PGSU, DEFAULT_DSN
 
 
 def test_create_drop_user(user):  # pylint: disable=unused-argument

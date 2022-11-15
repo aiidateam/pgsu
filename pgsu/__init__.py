@@ -122,9 +122,8 @@ class PGSU:
             return _execute_su_psql(command, dsn)
 
         raise ConnectionError(
-            'Could not connect to PostgreSQL server using dsn={}.\n'.format(
-                dsn) +
-            'Consider providing connection parameters via PGSU(dsn={...}).')
+            'Could not connect to PostgreSQL server using dsn={dsn}.\n' \
+                + 'Consider providing connection parameters via PGSU(dsn={...}).')
 
     def determine_setup(self):
         """Determine how to connect as the postgres superuser.
@@ -218,7 +217,7 @@ def prompt_for_dsn(dsn):
     dsn_new['database'] = click.prompt(
         'database', default=dsn.get('database'), type=str) or None
     dsn_new['password'] = click.prompt(
-        'postgres password of {}'.format(dsn_new['user']),
+        'postgres password of {dsn_new["user"]}',
         #hide_input=True,   # this breaks the input mocking in the tests. could make this configurable instead
         type=str,
         default=dsn.get('password') or '') or None
@@ -345,9 +344,10 @@ def _execute_su_psql(command, dsn, interactive=False):
         sudo_cmd += ['-n']
     su_cmd = ['su', user, '-c']
 
+    # Note: cd to home directory of user. Otherwise psql can fail with
+    # "could not change directory to ...: Permission denied"
     psql_cmd = [
-        'psql {opt} -tc {cmd}'.format(cmd=escape_for_bash(command),
-                                      opt=psql_option_str)
+        f'cd ~ && psql {psql_option_str} -tc {escape_for_bash(command)}'
     ]
     sudo_su_psql = sudo_cmd + su_cmd + psql_cmd
 

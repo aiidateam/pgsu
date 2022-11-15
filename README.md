@@ -16,7 +16,7 @@ In order to create them, you will need to connect to PostgreSQL as a SUPERUSER.
    * [Ubuntu 20.04](https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md) & PostgreSQL installed via `apt`
    * [Ubuntu 16.04](https://github.com/actions/virtual-environments/blob/master/images/linux/Ubuntu1604-README.md) & PostgreSQL installed via `apt`
    * [Ubuntu 18.04](https://github.com/actions/virtual-environments/blob/master/images/linux/Ubuntu1804-README.md) & PostgreSQL docker container
-   * [MacOS 10.15](https://github.com/actions/virtual-environments/blob/master/images/macos/macos-10.15-Readme.md) and PostgreSQL installed via `conda`
+   * [MacOS 12](https://github.com/actions/virtual-environments/blob/master/images/macos/macos-12-Readme.md) and PostgreSQL installed via `conda`
    * [Windows Server 2019](https://github.com/actions/virtual-environments/blob/master/images/win/Windows2019-Readme.md) and PostgreSQL installed via `conda`
  * uses [psycopg2](http://initd.org/psycopg/docs/index.html) to connect if possible
  * can use `sudo` to become the `postgres` UNIX user if necessary/possible (default Ubuntu PostgreSQL setups)

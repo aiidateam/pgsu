@@ -9,8 +9,6 @@ import os
 from enum import IntEnum
 import subprocess
 
-import click
-
 # By default, try "sudo" only when 'postgres' user exists
 DEFAULT_POSTGRES_UNIX_USER = 'postgres'
 try:
@@ -203,6 +201,7 @@ def prompt_for_dsn(dsn):
 
     :return: dictionary with the keys: host, port, database, user, password
     """
+    import click
     click.echo('Please provide PostgreSQL connection info:')
 
     # Note: Using '' as the prompt default is necessary to allow users to leave the field empty.

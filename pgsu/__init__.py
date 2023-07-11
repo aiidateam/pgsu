@@ -201,7 +201,7 @@ def prompt_for_dsn(dsn):
 
     :return: dictionary with the keys: host, port, database, user, password
     """
-    import click
+    import click  # pylint: disable=import-outside-toplevel
     click.echo('Please provide PostgreSQL connection info:')
 
     # Note: Using '' as the prompt default is necessary to allow users to leave the field empty.

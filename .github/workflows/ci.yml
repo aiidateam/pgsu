@@ -10,12 +10,12 @@ jobs:
     timeout-minutes: 5
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
-    - name: Set up Python 3.8
-      uses: actions/setup-python@v1
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v4
       with:
-        python-version: 3.8
+        python-version: 3.9
 
     - name: Install python dependencies
       run: |
@@ -29,7 +29,7 @@ jobs:
   ubuntu-apt:
     # ubuntu using postgresql installed via apt (+ pgtest)
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     timeout-minutes: 5
 
     strategy:
@@ -37,10 +37,10 @@ jobs:
         python-version: [3.6, 3.9]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -64,26 +64,26 @@ jobs:
 
     - name: Upload coverage report
       if: github.repository == 'aiidateam/pgsu'
-      uses: codecov/codecov-action@v1
+      uses: codecov/codecov-action@v3
       with:
         name: ubuntu-apt
         file: ./coverage.xml
         fail_ci_if_error: true
 
-  ubuntu-apt-1804:
+  ubuntu-apt-2004:
     # ubuntu using postgresql installed via apt (+ pgtest)
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     timeout-minutes: 5
 
     strategy:
       matrix:
-        python-version: [3.6]
+        python-version: [3.7]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -107,7 +107,7 @@ jobs:
 
     - name: Upload coverage report
       if: github.repository == 'aiidateam/pgsu'
-      uses: codecov/codecov-action@v1
+      uses: codecov/codecov-action@v3
       with:
         name: ubuntu-apt
         file: ./coverage.xml
@@ -116,7 +116,7 @@ jobs:
   ubuntu-postgres-action:
     # ubuntu using postgres docker container (custom action)
 
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     timeout-minutes: 5
 
     strategy:
@@ -125,7 +125,7 @@ jobs:
         postgres-pw: ["testpw"]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - uses: CasperWA/postgresql-action@v1.2
       with:
         postgresql version: '10'
@@ -135,7 +135,7 @@ jobs:
         #postgresql auth: trust
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -151,7 +151,7 @@ jobs:
 
     - name: Upload coverage report
       if: github.repository == 'aiidateam/pgsu'
-      uses: codecov/codecov-action@v1
+      uses: codecov/codecov-action@v3
       with:
         name: ubuntu-apt
         file: ./coverage.xml
@@ -181,9 +181,9 @@ jobs:
         options:  --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -200,7 +200,7 @@ jobs:
 
     - name: Upload coverage report
       if: github.repository == 'aiidateam/pgsu'
-      uses: codecov/codecov-action@v1
+      uses: codecov/codecov-action@v3
       with:
         name: ubuntu-postgres-service
         file: ./coverage.xml
@@ -218,10 +218,10 @@ jobs:
       #        python-version: [3.8]
       #
       #    steps:
-      #    - uses: actions/checkout@v2
+      #    - uses: actions/checkout@v3
       #
       #    - name: Set up Python ${{ matrix.python-version }}
-      #      uses: actions/setup-python@v1
+      #      uses: actions/setup-python@v4
       #      with:
       #        python-version: ${{ matrix.python-version }}
       #
@@ -253,13 +253,13 @@ jobs:
     strategy:
       matrix:
         python-version: [3.8]
-        os: ['macos-12', 'windows-2019']
+        os: ['macos-latest', 'windows-latest']
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -274,12 +274,6 @@ jobs:
         initdb -D test_db
         pg_ctl -D test_db -o "-d 5" start  # start with debugging
 
-    # - name: Create postgres superuser on Windows
-    #   if: matrix.os == 'windows-2019'
-    #   shell: bash -l {0}
-    #   run: |
-    #     createuser -U runneradmin -s postgres
-
     - name: Install pgsu
       run: |
         pip install -e .[testing]
@@ -290,7 +284,7 @@ jobs:
 
     - name: Upload coverage report
       if: github.repository == 'aiidateam/pgsu'
-      uses: codecov/codecov-action@v1
+      uses: codecov/codecov-action@v3
       with:
         name: "${{ matrix.os }}-conda"
         file: ./coverage.xml

@@ -12,7 +12,7 @@ GET_DBS_COMMAND = 'SELECT datname FROM pg_database'
 @click.command()
 @click.argument('query', type=str, default=GET_DBS_COMMAND)
 def run(query):
-    """Execute SQL command as PostrgreSQL superuser."""
+    """Execute SQL command as PostgreSQL superuser."""
     pgsu = PGSU(interactive=True, quiet=False)
     click.echo(f'Executing query: {query}')
     dbs = pgsu.execute(query)

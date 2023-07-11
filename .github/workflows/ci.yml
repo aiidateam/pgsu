@@ -29,12 +29,12 @@ jobs:
   ubuntu-apt:
     # ubuntu using postgresql installed via apt (+ pgtest)
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     timeout-minutes: 5
 
     strategy:
       matrix:
-        python-version: [3.7, 3.11]
+        python-version: [3.8, 3.11]
 
     steps:
     - uses: actions/checkout@v3
@@ -48,9 +48,9 @@ jobs:
       run: |
         sudo rm -f /etc/apt/sources.list.d/dotnetdev.list /etc/apt/sources.list.d/microsoft-prod.list
         sudo apt update
-        sudo apt install postgresql
-        sudo cat /etc/postgresql/*/main/pg_hba.conf
-        sudo pg_ctlcluster 14 main start
+        sudo apt install postgresql-12
+        sudo cat /etc/postgresql/12/main/pg_hba.conf
+        sudo pg_ctlcluster 12 main start
 
     - name: Install pgsu
       run: |

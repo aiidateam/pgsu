@@ -34,7 +34,7 @@ jobs:
 
     strategy:
       matrix:
-        python-version: [3.6, 3.9]
+        python-version: [3.7, 3.11]
 
     steps:
     - uses: actions/checkout@v3
@@ -91,7 +91,7 @@ jobs:
       run: |
         sudo rm -f /etc/apt/sources.list.d/dotnetdev.list /etc/apt/sources.list.d/microsoft-prod.list
         sudo apt update
-        sudo apt install postgresql-10
+        sudo apt install postgresql-12
         sudo cat /etc/postgresql/10/main/pg_hba.conf
         sudo pg_ctlcluster 10 main start
 

@@ -117,7 +117,7 @@ jobs:
   ubuntu-postgres-action:
     # ubuntu using postgres docker container (custom action)
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     timeout-minutes: 5
 
     strategy:
@@ -161,7 +161,7 @@ jobs:
   ubuntu-postgres-service:
     # ubuntu using postgres docker container (service provided by github actions)
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     timeout-minutes: 5
 
     strategy:
@@ -254,7 +254,7 @@ jobs:
     strategy:
       matrix:
         python-version: [3.8]
-        os: ['macos-latest', 'windows-latest']
+        os: ['macos-12', 'windows-2022']
 
     steps:
     - uses: actions/checkout@v3

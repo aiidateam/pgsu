@@ -65,8 +65,9 @@ jobs:
 
     - name: Upload coverage report
       if: github.repository == 'aiidateam/pgsu'
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
+        token: ${{ secrets.CODECOV_TOKEN }}
         name: ubuntu-apt
         file: ./coverage.xml
         fail_ci_if_error: true
@@ -108,8 +109,9 @@ jobs:
 
     - name: Upload coverage report
       if: github.repository == 'aiidateam/pgsu'
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
+        token: ${{ secrets.CODECOV_TOKEN }}
         name: ubuntu-apt
         file: ./coverage.xml
         fail_ci_if_error: true
@@ -152,8 +154,9 @@ jobs:
 
     - name: Upload coverage report
       if: github.repository == 'aiidateam/pgsu'
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
+        token: ${{ secrets.CODECOV_TOKEN }}
         name: ubuntu-apt
         file: ./coverage.xml
         fail_ci_if_error: true
@@ -201,8 +204,9 @@ jobs:
 
     - name: Upload coverage report
       if: github.repository == 'aiidateam/pgsu'
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
+        token: ${{ secrets.CODECOV_TOKEN }}
         name: ubuntu-postgres-service
         file: ./coverage.xml
         fail_ci_if_error: true
@@ -285,8 +289,9 @@ jobs:
 
     - name: Upload coverage report
       if: github.repository == 'aiidateam/pgsu'
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
+        token: ${{ secrets.CODECOV_TOKEN }}
         name: "${{ matrix.os }}-conda"
         file: ./coverage.xml
         fail_ci_if_error: true

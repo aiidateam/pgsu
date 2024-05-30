@@ -56,7 +56,7 @@ jobs:
         pip freeze
 
     - name: Run test suite
-      run: pytest --cov-report xml
+      run: pytest --cov-report xml -sv
 
     - name: Upload coverage report
       if: github.repository == 'aiidateam/pgsu'
@@ -101,7 +101,7 @@ jobs:
     - name: Run test suite
       env:
         PGSU_TEST_PASSWORD: ${{ matrix.postgres-pw}}
-      run: pytest --cov-report xml
+      run: pytest --cov-report xml -sv
 
     - name: Upload coverage report
       if: github.repository == 'aiidateam/pgsu'
@@ -151,7 +151,7 @@ jobs:
       env:
         PGSU_TEST_PASSWORD: ${{ matrix.postgres-pw}}
         PGSU_TEST_PORT: ${{ job.services.postgres.ports[5432] }}
-      run: pytest --cov-report xml
+      run: pytest --cov-report xml -sv
 
     - name: Upload coverage report
       if: github.repository == 'aiidateam/pgsu'
@@ -237,7 +237,7 @@ jobs:
         pip freeze
 
     - name: Run test suite
-      run: pytest --cov-report xml
+      run: pytest --cov-report xml -sv
 
     - name: Upload coverage report
       if: github.repository == 'aiidateam/pgsu'

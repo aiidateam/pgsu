@@ -6,7 +6,7 @@
 
 Connect to an existing PostgreSQL cluster as a PostgreSQL [SUPERUSER](https://www.postgresql.org/docs/current/sql-createrole.html) and execute SQL commands.
 
-[`psycopg2`](https://pypi.org/project/psycopg2/) has a great API for interacting with PostgreSQL, once you provide it with the connection parameters for a given database.
+[`psycopg`](https://pypi.org/project/psycopg/) has a great API for interacting with PostgreSQL, once you provide it with the connection parameters for a given database.
 However, what if your desired database and database user do not yet exist?
 In order to create them, you will need to connect to PostgreSQL as a SUPERUSER.
 
@@ -19,7 +19,7 @@ In order to create them, you will need to connect to PostgreSQL as a SUPERUSER.
    * [Ubuntu 18.04](https://github.com/actions/virtual-environments/blob/master/images/linux/Ubuntu1804-README.md) & PostgreSQL docker container
    * [MacOS 12](https://github.com/actions/virtual-environments/blob/master/images/macos/macos-12-Readme.md) and PostgreSQL installed via `conda`
    * [Windows Server 2019](https://github.com/actions/virtual-environments/blob/master/images/win/Windows2019-Readme.md) and PostgreSQL installed via `conda`
- * uses [psycopg2](http://initd.org/psycopg/docs/index.html) to connect if possible
+ * uses [psycopg](http://initd.org/psycopg/docs/index.html) to connect if possible
  * can use `sudo` to become the `postgres` UNIX user if necessary/possible (default Ubuntu PostgreSQL setups)
 
 ## Usage

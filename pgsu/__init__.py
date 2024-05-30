@@ -8,6 +8,7 @@ import traceback
 import os
 from enum import IntEnum
 import subprocess
+import warnings
 
 # By default, try "sudo" only when 'postgres' user exists
 DEFAULT_POSTGRES_UNIX_USER = 'postgres'
@@ -29,7 +30,7 @@ DEFAULT_DSN = {
     'port': 5432,
     'user': DEFAULT_POSTGRES_SUPERUSER,
     'password': None,
-    'database': 'template1',
+    'dbname': 'template1',
 }
 
 LOGGER = logging.getLogger('pgsu')
@@ -48,7 +49,7 @@ class PGSU:
     """
     Connect to an existing PostgreSQL cluster as the `postgres` superuser and execute SQL commands.
 
-    Tries to use psycopg2 with a fallback to psql subcommands (using ``sudo su`` to run as postgres user).
+    Tries to use psycopg with a fallback to psql subcommands (using ``sudo su`` to run as postgres user).
 
     Simple Example::
 
@@ -76,13 +77,13 @@ class PGSU:
 
         :param interactive: use True for verdi commands
         :param quiet: use False to show warnings/exceptions
-        :param dsn: psycopg dictionary containing keys like 'host', 'user', 'port', 'database'.
+        :param dsn: psycopg dictionary containing keys like 'host', 'user', 'port', 'dbname'.
             It is sufficient to provide only those values that deviate from the defaults.
         :param determine_setup: Whether to determine setup upon instantiation.
             You may set this to False and use the 'determine_setup()' method instead.
-        :param try_sudo: If connection via psycopg2 fails, whether to try and use `sudo` to  become
+        :param try_sudo: If connection via psycopg fails, whether to try and use `sudo` to  become
             the `postgres_unix_user` and run commands using passwordless `psql`.
-        :param postgres_unix_user: UNIX user to try to "become", if connection via psycopg2 fails
+        :param postgres_unix_user: UNIX user to try to "become", if connection via psycopg fails
         """
         self.interactive = interactive
         if not quiet:
@@ -97,6 +98,12 @@ class PGSU:
         self.dsn = DEFAULT_DSN.copy()
         if dsn is not None:
             self.dsn.update(dsn)
+
+        if 'database' in self.dsn:
+            warnings.warn(
+                'The dsn contained the key `database` which was renamed to `dbname` in psycopg v3. '
+                'Renamed the database key to dbname', UserWarning)
+            self.dsn['dbname'] = self.dsn.pop('database')
 
         self.try_sudo = try_sudo
         self.postgres_unix_user = postgres_unix_user
@@ -126,7 +133,7 @@ class PGSU:
     def determine_setup(self):
         """Determine how to connect as the postgres superuser.
 
-        Depending on how postgres is set up, psycopg2 can be used to create dbs and db users,
+        Depending on how postgres is set up, psycopg can be used to create dbs and db users,
         otherwise a subprocess has to be used that executes psql as an os user with appropriate permissions.
 
         Note: We aim to connect as a superuser (typically 'postgres') with privileges to manipulate (create/drop)
@@ -137,8 +144,8 @@ class PGSU:
         """
         dsn = self.dsn.copy()
 
-        # Try to connect as a postgres superuser via psycopg2 (equivalent to using psql).
-        LOGGER.debug('Trying to connect via "psycopg2"...')
+        # Try to connect as a postgres superuser via psycopg (equivalent to using psql).
+        LOGGER.debug('Trying to connect via "psycopg"...')
         for pg_user in unique_list([self.dsn.get('user'), None]):
             dsn['user'] = pg_user
             # First try the host specified (works if 'host' has setting 'trust' in pg_hba.conf).
@@ -205,7 +212,7 @@ def prompt_for_dsn(dsn):
     click.echo('Please provide PostgreSQL connection info:')
 
     # Note: Using '' as the prompt default is necessary to allow users to leave the field empty.
-    #       Using `None` in the dictionary is necessary in order for psycopg2 to interpret the value as not provided.
+    #       Using `None` in the dictionary is necessary in order for  to interpret the value as not provided.
     dsn_new = {}
     dsn_new['host'] = click.prompt(
         'postgres host', default=dsn.get('host') or '', type=str) or None
@@ -213,8 +220,8 @@ def prompt_for_dsn(dsn):
         'postgres port', default=dsn.get('port'), type=int) or None
     dsn_new['user'] = click.prompt(
         'postgres super user', default=dsn.get('user'), type=str) or None
-    dsn_new['database'] = click.prompt(
-        'database', default=dsn.get('database'), type=str) or None
+    dsn_new['dbname'] = click.prompt(
+        'dbname', default=dsn.get('dbname'), type=str) or None
     dsn_new['password'] = click.prompt(
         'postgres password of {dsn_new["user"]}',
         #hide_input=True,   # this breaks the input mocking in the tests. could make this configurable instead
@@ -226,11 +233,11 @@ def prompt_for_dsn(dsn):
 
 def _try_connect_psycopg(**kwargs):
     """
-    try to start a psycopg2 connection.
+    try to start a psycopg connection.
 
     :return: True if successful, False otherwise
     """
-    from psycopg2 import connect  # pylint: disable=import-outside-toplevel
+    from psycopg import connect  # pylint: disable=import-outside-toplevel
     success = False
     try:
         conn = connect(**kwargs)
@@ -244,17 +251,17 @@ def _try_connect_psycopg(**kwargs):
 
 def _execute_psyco(command, dsn):
     """
-    executes a postgres commandline through psycopg2
+    executes a postgres commandline through psycopg
 
     :param command: A psql command line as a str
-    :param dsn: will be forwarded to psycopg2.connect
+    :param dsn: will be forwarded to psycopg.connect
     """
-    import psycopg2  # pylint: disable=import-outside-toplevel
+    import psycopg  # pylint: disable=import-outside-toplevel
 
     conn = None
     output = None
     try:
-        conn = psycopg2.connect(**dsn)
+        conn = psycopg.connect(**dsn)
         conn.autocommit = True
         with conn.cursor() as cursor:
             cursor.execute(command)
@@ -308,14 +315,20 @@ def _execute_su_psql(command, dsn, interactive=False):
     Logs any output on 'stderr' to the pgsu logger at 'warning' level.
 
     :param command: A psql command line as a str
-    :param dsn: connection details to forward to psql, signature as in psycopg2.connect
+    :param dsn: connection details to forward to psql, signature as in psycopg.connect
     :param interactive: If False, `sudo` won't ask for a password and fail if one is required.
     """
     psql_option_str = ''
 
-    database = dsn.get('database')
-    if database:
-        psql_option_str += f'-d {database}'
+    if 'database' in dsn:
+        warnings.warn(
+            'The dsn contained the key `database` which was renamed to `dbname` in psycopg v3. '
+            'Renamed the database key to dbname', UserWarning)
+        dsn['dbname'] = dsn.pop('database')
+
+    dbname = dsn.get('dbname')
+    if dbname:
+        psql_option_str += f'-d {dbname}'
 
     # to do: Forward password to psql; ignore host only when the password is None.  # pylint: disable=fixme
     # Note: There is currently no known postgresql setup that needs this, though

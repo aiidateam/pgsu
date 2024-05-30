@@ -268,9 +268,10 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - uses: conda-incubator/setup-miniconda@v2
+    - uses: conda-incubator/setup-miniconda@v3
       with:
         python-version: ${{ matrix.python-version }}
+        run-post: false  # https://github.com/conda-incubator/setup-miniconda/issues/280
 
     - name: Install system dependencies
       shell: bash -l {0}

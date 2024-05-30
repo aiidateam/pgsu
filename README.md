@@ -42,7 +42,7 @@ pgsu = PGSU(dsn={
     'port': 5432,
     'user': 'postgres',
     'password': None,
-    'database': 'template1',  # Note: you cannot drop databases you are connected to
+    'dbname': 'template1',  # Note: you cannot drop databases you are connected to
 })
 ```
 

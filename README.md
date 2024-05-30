@@ -61,6 +61,6 @@ Executing query: SELECT usename FROM pg_user
 
 Run the tests as follows:
 ```bash
-pip install -e .[testing]
+pip install -e .[dev]
 pytest
 ```

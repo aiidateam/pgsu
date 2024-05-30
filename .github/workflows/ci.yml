@@ -19,7 +19,7 @@ jobs:
 
     - name: Install python dependencies
       run: |
-        pip install .[pre_commit,testing]
+        pip install .[dev]
         pip freeze
 
     - name: Run pre-commit
@@ -52,7 +52,7 @@ jobs:
 
     - name: Install pgsu
       run: |
-        pip install -e .[testing]
+        pip install -e .[dev]
         pip freeze
 
     - name: Run test suite
@@ -95,7 +95,7 @@ jobs:
 
     - name: Install pgsu
       run: |
-        pip install -e .[testing]
+        pip install -e .[dev]
         pip freeze
 
     - name: Run test suite
@@ -144,7 +144,7 @@ jobs:
 
     - name: Install pgsu
       run: |
-        pip install -e .[testing]
+        pip install -e .[dev]
         pip freeze
 
     - name: Run test suite
@@ -187,7 +187,7 @@ jobs:
       #
       #    - name: Install pgsu
       #      run: |
-      #        pip install -e .[testing]
+      #        pip install -e .[dev]
       #        pip freeze
       #
       #    # note: I tested this locally with *only* the homebrew postgres server running and it worked.
@@ -233,7 +233,7 @@ jobs:
 
     - name: Install pgsu
       run: |
-        pip install -e .[testing]
+        pip install -e .[dev]
         pip freeze
 
     - name: Run test suite

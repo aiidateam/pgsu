@@ -7,7 +7,7 @@ import os
 import sys
 from contextlib import contextmanager
 from io import StringIO
-import psycopg2
+import psycopg
 
 import conftest
 from pgsu import PGSU, DEFAULT_DSN
@@ -33,9 +33,9 @@ def test_grant_priv(pgsu, user, database):  # pylint: disable=unused-argument
         'port': pgsu.dsn.get('port'),
         'user': user,
         'password': conftest.DEFAULT_PASSWORD,
-        'database': database,
+        'dbname': database,
     }
-    conn = psycopg2.connect(**dsn)
+    conn = psycopg.connect(**dsn)  # pylint: disable=missing-kwoa
     conn.close()
 
 
@@ -46,7 +46,7 @@ def input_dsn(dsn):
     See https://stackoverflow.com/a/36491341/1069467
     """
     inputs = []
-    for key in ['host', 'port', 'user', 'database', 'password']:
+    for key in ['host', 'port', 'user', 'dbname', 'password']:
         inputs.append(str(dsn.get(key, '')))
 
     input_str = str(os.linesep.join(inputs) + os.linesep)
